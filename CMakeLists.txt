@@ -3,4 +3,4 @@ project(StudyTracker)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(StudyTracker main.cpp)
+add_executable(StudyTracker src/main.cpp)
