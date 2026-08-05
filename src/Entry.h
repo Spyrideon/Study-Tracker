@@ -3,6 +3,7 @@
 
 #include <chrono>
 #include <string>
+#include "json.hpp"
 
 
 struct Entry {
@@ -12,5 +13,7 @@ struct Entry {
     std::chrono::time_point<std::chrono::system_clock> start{};
     std::string note;
 };
+
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Entry, id, subject, duration, start, note);
 
 #endif //STUDYTRACKER_ENTRY_H

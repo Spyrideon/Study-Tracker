@@ -5,6 +5,9 @@ TEST(EntryStoreTest, AddEntry_IncreasesResultsForSubject) {
     EntryStore store;
     store.addEntry(Entry{.subject = "Math"});
     EXPECT_EQ(store.getAllBySubject("Math").size(), 1);
+    store.addEntry(Entry{.subject = "Math"});
+    EXPECT_EQ(store.getAllBySubject("Math").size(), 2);
+
 }
 
 TEST(EntryStoreTest, AddEntry_TestDefaultValues) {
