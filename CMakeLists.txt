@@ -9,7 +9,9 @@ target_include_directories(third_party INTERFACE include)
 add_library(StudyTrackerLib
         src/Entry.h
         src/EntryStore.cpp
-        src/EntryStore.h)
+        src/EntryStore.h
+        src/persistence.cpp
+        src/persistence.h)
 target_include_directories(StudyTrackerLib PUBLIC src)
 
 add_executable(StudyTracker src/main.cpp)
