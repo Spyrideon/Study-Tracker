@@ -9,6 +9,9 @@
 class EntryStore {
 public:
 
+    EntryStore() = default;
+    explicit EntryStore(const std::vector<Entry> &str);
+
     void addEntry(Entry entry);
 
     bool deleteEntry(int id);

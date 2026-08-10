@@ -12,6 +12,7 @@ struct Entry {
     std::chrono::minutes duration{0};
     std::chrono::time_point<std::chrono::system_clock> start{};
     std::string note;
+    bool operator==(const Entry&) const = default;
 };
 
 inline void to_json(nlohmann::json& j, const Entry& e) {
