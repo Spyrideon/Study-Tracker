@@ -17,6 +17,7 @@ public:
     bool deleteEntry(int id);
 
     [[nodiscard]] std::vector<Entry> getAllBySubject(const std::string& subject) const;
+    [[nodiscard]] std::vector<Entry> getAllEntrys() const;
 
 private:
     std::vector<Entry> store;

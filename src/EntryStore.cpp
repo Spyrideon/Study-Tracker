@@ -20,6 +20,10 @@ bool EntryStore::deleteEntry(const int id){
     return false;
 }
 
+std::vector<Entry> EntryStore::getAllEntrys() const{
+    return store;
+}
+
 std::vector<Entry> EntryStore::getAllBySubject(const std::string& subject) const {
     std::vector<Entry> list;
     for (auto & item : store) {

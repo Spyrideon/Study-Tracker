@@ -14,7 +14,10 @@ add_library(StudyTrackerLib
         src/persistence.h)
 target_include_directories(StudyTrackerLib PUBLIC src)
 
-add_executable(StudyTracker src/main.cpp)
+add_executable(StudyTracker src/main.cpp
+        src/App.cpp
+        src/App.h
+)
 
 target_link_libraries(StudyTrackerLib PUBLIC third_party)
 target_link_libraries(StudyTracker PRIVATE StudyTrackerLib)
