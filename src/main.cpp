@@ -3,6 +3,8 @@
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
+#include "ui.h"
+#include "App.h"
 
 #include <SDL.h>
 #include <SDL_opengl.h>
@@ -53,6 +55,8 @@ int main(int, char**)          // (int,char**) sdl entry-point
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
+    App app;
+
     bool running = true;
     while (running) {
         SDL_Event event;
@@ -72,6 +76,8 @@ int main(int, char**)          // (int,char**) sdl entry-point
         ImGui::NewFrame();
 
         ImGui::ShowDemoWindow();
+
+        ui::render(app);
 
         // render -------------------------------------------------------------------------
         ImGui::Render();

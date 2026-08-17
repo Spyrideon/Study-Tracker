@@ -46,7 +46,9 @@ target_link_libraries(StudyTrackerLib PUBLIC third_party)
 
 
 # ------ GUI executable -------
-add_executable(StudyTracker src/main.cpp)
+add_executable(StudyTracker src/main.cpp
+        src/ui.cpp
+        src/ui.h)
 target_link_libraries(StudyTracker PRIVATE
         StudyTrackerLib
         imgui)
