@@ -16,7 +16,18 @@ std::vector<Entry> App::loadStore() const{
 
 void App::saveStore() const {
     std::ofstream output("test.json");
-    persistence::save(entryStore.getAllEntrys(), output);
+    persistence::save(entryStore.getAllEntries(), output);
     output.close();
 }
 
+const std::vector<Entry>& App::getEntries() const{
+    return entryStore.getAllEntries();
+}
+
+void App::addEntry() {
+    Entry e;
+    e.note = "This is a test";
+    e.subject = "Math";
+    entryStore.addEntry(e);
+    saveStore();
+}

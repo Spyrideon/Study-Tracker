@@ -20,7 +20,7 @@ bool EntryStore::deleteEntry(const int id){
     return false;
 }
 
-std::vector<Entry> EntryStore::getAllEntrys() const{
+const std::vector<Entry>& EntryStore::getAllEntries() const{
     return store;
 }
 

@@ -11,6 +11,9 @@ public:
 
     void saveStore() const;
 
+    [[nodiscard]] const std::vector<Entry>& getEntries() const;
+    void addEntry();
+
 private:
 
     EntryStore entryStore;
