@@ -4,12 +4,21 @@
 
 namespace {     // private helpers
     void drawEntryTable(const std::vector<Entry>& entries);
+    ImGuiWindowFlags getWindowFlags();
 }
 
 namespace ui {
     void render(App &app) {
-        ImGui::Begin("Table");
+        bool open = true;
+        ImGui::SetNextWindowSize(ImVec2(1000, 500));
+        ImGui::SetNextWindowPos(ImVec2(0,0));
+        ImGui::Begin("Table", &open, getWindowFlags());
         drawEntryTable(app.getEntries());
+        ImGui::End();
+
+        ImGui::SetNextWindowSize(ImVec2(300, 500));
+        ImGui::SetNextWindowPos(ImVec2(1000, 0));
+        ImGui::Begin("Tracker", &open, getWindowFlags());
         if (ImGui::Button("TestButton")) {
             app.addEntry();
         }
@@ -54,5 +63,12 @@ namespace {
 
             ImGui::EndTable();
         }
+    }
+
+    ImGuiWindowFlags getWindowFlags() {
+        const ImGuiWindowFlags flags =      ImGuiWindowFlags_NoCollapse |
+                                            ImGuiWindowFlags_NoMove |
+                                            ImGuiWindowFlags_NoResize;
+        return flags;
     }
 }
