@@ -2,7 +2,8 @@
 
 
 EntryStore::EntryStore(const std::vector<Entry> &str) : store(str){
-
+    for (const auto& e : store)
+        nextId = std::max(nextId, e.id + 1);
 }
 
 void EntryStore::addEntry(Entry entry) {

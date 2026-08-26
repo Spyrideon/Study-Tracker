@@ -2,6 +2,7 @@
 #define STUDYTRACKER_APP_H
 
 #include "EntryStore.h"
+#include <optional>
 
 class App {
 public:
@@ -14,8 +15,11 @@ public:
     [[nodiscard]] const std::vector<Entry>& getEntries() const;
     void addEntry();
 
-private:
+    bool startEntry();
+    bool endEntry();
 
+private:
+    std::optional<Entry> openEntry;
     EntryStore entryStore;
 };
 

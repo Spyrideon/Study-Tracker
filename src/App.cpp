@@ -31,3 +31,20 @@ void App::addEntry() {
     entryStore.addEntry(e);
     saveStore();
 }
+
+bool App::startEntry() {
+    if (openEntry) return false;
+    openEntry.emplace();
+    openEntry->start = std::chrono::system_clock::now();
+    return true;
+}
+bool App::endEntry() {
+    if (!openEntry) return false;
+    const auto now = std::chrono::system_clock::now();
+    openEntry->duration =
+        std::chrono::duration_cast<std::chrono::minutes>(now - openEntry->start);
+    entryStore.addEntry(*openEntry);
+    openEntry.reset();
+    saveStore();
+    return true;
+}
