@@ -48,3 +48,6 @@ bool App::endEntry() {
     saveStore();
     return true;
 }
+bool App::isTimerRunning() const{
+    return openEntry.has_value();
+}

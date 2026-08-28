@@ -17,6 +17,7 @@ public:
 
     bool startEntry();
     bool endEntry();
+    bool isTimerRunning() const;
 
 private:
     std::optional<Entry> openEntry;
