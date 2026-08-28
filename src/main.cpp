@@ -57,6 +57,8 @@ int main(int, char**)          // (int,char**) sdl entry-point
 
     App app;
 
+    Ui ui(app);
+
     bool running = true;
     while (running) {
         SDL_Event event;
@@ -77,7 +79,8 @@ int main(int, char**)          // (int,char**) sdl entry-point
 
         ImGui::ShowDemoWindow();
 
-        ui::render(app);
+        ui.render();
+
 
         // render -------------------------------------------------------------------------
         ImGui::Render();
