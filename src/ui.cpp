@@ -4,20 +4,8 @@
 Ui::Ui(App &app) : app(app){}
 
 void Ui::render() {
-    bool open = true;
-    ImGui::SetNextWindowSize(ImVec2(1000, 500));
-    ImGui::SetNextWindowPos(ImVec2(0,0));
-    ImGui::Begin("Table", &open, getWindowFlags());
     drawEntryTable(app.getEntries());
-    ImGui::End();
-
-    ImGui::SetNextWindowSize(ImVec2(300, 500));
-    ImGui::SetNextWindowPos(ImVec2(1000, 0));
-    ImGui::Begin("Tracker", &open, getWindowFlags());
-    if (ImGui::Button("TestButton")) {
-        app.addEntry();
-    }
-    ImGui::End();
+    drawTracker();
 }
 
 
@@ -29,6 +17,9 @@ ImGuiWindowFlags Ui::getWindowFlags() {
 }
 
 void Ui::drawEntryTable(const std::vector<Entry> &entries) const{
+    ImGui::SetNextWindowSize(ImVec2(1000, 500));
+    ImGui::SetNextWindowPos(ImVec2(0,0));
+    ImGui::Begin("Table", nullptr, getWindowFlags());
 
     static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
 
@@ -64,4 +55,23 @@ void Ui::drawEntryTable(const std::vector<Entry> &entries) const{
 
         ImGui::EndTable();
     }
+    ImGui::End();
+}
+
+void Ui::drawTracker() {
+    ImGui::SetNextWindowSize(ImVec2(300, 500));
+    ImGui::SetNextWindowPos(ImVec2(1000, 0));
+    ImGui::Begin("Tracker", nullptr, getWindowFlags());
+
+    if (ImGui::Button("Start Timer"))
+        app.startEntry();
+    if (app.isTimerRunning())
+        if (ImGui::Button("Stop Timer"))
+            app.endEntry();
+
+    /*if (ImGui::Button("TestButton")) {
+        app.addEntry();
+    }*/
+
+    ImGui::End();
 }

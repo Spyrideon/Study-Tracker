@@ -17,6 +17,7 @@ private:
     static ImGuiWindowFlags getWindowFlags();
 
     void drawEntryTable(const std::vector<Entry>& entries) const;
+    void drawTracker();
 };
 
 #endif //STUDYTRACKER_UI_H
