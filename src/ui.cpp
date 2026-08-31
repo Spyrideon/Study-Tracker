@@ -1,7 +1,7 @@
 #include "ui.h"
 #include "App.h"
 
-Ui::Ui(App &app) : app(app){}
+Ui::Ui(App &app) : app(app), noteBuff(""), subjectBuff(""){}
 
 void Ui::render() {
     drawEntryTable(app.getEntries());
@@ -21,10 +21,11 @@ void Ui::drawEntryTable(const std::vector<Entry> &entries) const{
     ImGui::SetNextWindowPos(ImVec2(0,0));
     ImGui::Begin("Table", nullptr, getWindowFlags());
 
-    static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
+    static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY;
 
     const int columnCount = 4;
     if (ImGui::BeginTable("table1", columnCount, flags)) {
+        ImGui::TableSetupScrollFreeze(0,1);
         ImGui::TableSetupColumn("Subject");
         ImGui::TableSetupColumn("Duration");
         ImGui::TableSetupColumn("Date-Started");
@@ -59,19 +60,20 @@ void Ui::drawEntryTable(const std::vector<Entry> &entries) const{
 }
 
 void Ui::drawTracker() {
-    ImGui::SetNextWindowSize(ImVec2(300, 500));
-    ImGui::SetNextWindowPos(ImVec2(1000, 0));
+    ImGui::SetNextWindowSize(ImVec2(1000, 220));
+    ImGui::SetNextWindowPos(ImVec2(0, 500));
     ImGui::Begin("Tracker", nullptr, getWindowFlags());
 
     if (ImGui::Button("Start Timer"))
         app.startEntry();
-    if (app.isTimerRunning())
-        if (ImGui::Button("Stop Timer"))
-            app.endEntry();
-
-    /*if (ImGui::Button("TestButton")) {
-        app.addEntry();
-    }*/
+    if (app.isTimerRunning()) {
+        ImGui::SameLine();
+        if (ImGui::Button("Stop Timer")) {
+            app.endEntry(noteBuff, subjectBuff);
+        }
+        ImGui::InputText("Subject", subjectBuff, 20);
+        ImGui::InputText("Note", noteBuff, 50);
+    }
 
     ImGui::End();
 }

@@ -38,11 +38,13 @@ bool App::startEntry() {
     openEntry->start = std::chrono::system_clock::now();
     return true;
 }
-bool App::endEntry() {
+bool App::endEntry(const char* note, const char* subject) {
     if (!openEntry) return false;
     const auto now = std::chrono::system_clock::now();
     openEntry->duration =
         std::chrono::duration_cast<std::chrono::minutes>(now - openEntry->start);
+    openEntry->note = note;
+    openEntry->subject = subject;
     entryStore.addEntry(*openEntry);
     openEntry.reset();
     saveStore();

@@ -16,8 +16,8 @@ public:
     void addEntry();
 
     bool startEntry();
-    bool endEntry();
-    bool isTimerRunning() const;
+    bool endEntry(const char* note, const char* subject);
+    [[nodiscard]] bool isTimerRunning() const;
 
 private:
     std::optional<Entry> openEntry;

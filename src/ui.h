@@ -14,6 +14,8 @@ public:
 
 private:
     App &app;
+    char noteBuff[50];
+    char subjectBuff[20];
     static ImGuiWindowFlags getWindowFlags();
 
     void drawEntryTable(const std::vector<Entry>& entries) const;
