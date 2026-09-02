@@ -3,6 +3,7 @@
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
+#include "imgui_internal.h"
 #include "ui.h"
 #include "App.h"
 
@@ -77,7 +78,28 @@ int main(int, char**)          // (int,char**) sdl entry-point
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
-        ImGui::DockSpaceOverViewport(); 
+        ImGuiID dockspace_id  = ImGui::GetID("MainDockSpace");
+        ImGuiViewport* viewport = ImGui::GetMainViewport();
+
+        if (ImGui::DockBuilderGetNode(dockspace_id) == nullptr) {   // true --> no layout exists yet
+            ImGui::DockBuilderAddNode(dockspace_id, ImGuiDockNodeFlags_DockSpace);
+            ImGui::DockBuilderSetNodeSize(dockspace_id, viewport->Size);
+
+            ImGuiID dock_main  = dockspace_id;
+            ImGuiID dock_right = 0;
+
+            ImGui::DockBuilderSplitNode(dock_main,
+                                ImGuiDir_Right,
+                                0.25f,
+                                &dock_right,
+                                &dock_main);
+
+            ImGui::DockBuilderDockWindow("Table",   dock_main);
+            ImGui::DockBuilderDockWindow("Tracker", dock_right);
+            ImGui::DockBuilderFinish(dockspace_id);
+        }
+
+        ImGui::DockSpaceOverViewport(dockspace_id, viewport);
 
         ImGui::ShowDemoWindow();
 
