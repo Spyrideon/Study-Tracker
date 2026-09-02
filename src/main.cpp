@@ -50,6 +50,7 @@ int main(int, char**)          // (int,char**) sdl entry-point
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     ImGui::StyleColorsDark();
 
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
@@ -76,6 +77,7 @@ int main(int, char**)          // (int,char**) sdl entry-point
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
+        ImGui::DockSpaceOverViewport(); 
 
         ImGui::ShowDemoWindow();
 

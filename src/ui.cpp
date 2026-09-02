@@ -17,9 +17,7 @@ ImGuiWindowFlags Ui::getWindowFlags() {
 }
 
 void Ui::drawEntryTable(const std::vector<Entry> &entries) const{
-    ImGui::SetNextWindowSize(ImVec2(1000, 500));
-    ImGui::SetNextWindowPos(ImVec2(0,0));
-    ImGui::Begin("Table", nullptr, getWindowFlags());
+    ImGui::Begin("Table", nullptr);
 
     static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY;
 
@@ -60,9 +58,7 @@ void Ui::drawEntryTable(const std::vector<Entry> &entries) const{
 }
 
 void Ui::drawTracker() {
-    ImGui::SetNextWindowSize(ImVec2(1000, 220));
-    ImGui::SetNextWindowPos(ImVec2(0, 500));
-    ImGui::Begin("Tracker", nullptr, getWindowFlags());
+    ImGui::Begin("Tracker", nullptr);
 
     if (ImGui::Button("Start Timer"))
         app.startEntry();
