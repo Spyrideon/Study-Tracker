@@ -16,18 +16,20 @@ ImGuiWindowFlags Ui::getWindowFlags() {
     return flags;
 }
 
-void Ui::drawEntryTable(const std::vector<Entry> &entries) const{
+void Ui::drawEntryTable(const std::vector<Entry> &entries){
     ImGui::Begin("Table", nullptr);
 
-    static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY;
+    static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY | ImGuiTableFlags_Resizable | ImGuiTableFlags_Hideable | ImGuiTableFlags_Reorderable;
 
-    const int columnCount = 4;
+    const int columnCount = 5;
+    int toDelete = -1;
     if (ImGui::BeginTable("table1", columnCount, flags)) {
         ImGui::TableSetupScrollFreeze(0,1);
         ImGui::TableSetupColumn("Subject");
         ImGui::TableSetupColumn("Duration");
         ImGui::TableSetupColumn("Date-Started");
         ImGui::TableSetupColumn("Note");
+        ImGui::TableSetupColumn("Action");
         ImGui::TableHeadersRow();
 
         for (int row = 0; row < entries.size(); row++) {
@@ -42,11 +44,15 @@ void Ui::drawEntryTable(const std::vector<Entry> &entries) const{
             ImGui::Text("%lld min", static_cast<long long>(e.duration.count()));
 
             ImGui::TableNextColumn();
+            const auto local = std::chrono::current_zone()->to_local(e.start);
             ImGui::TextUnformatted(std::format("{:%Y-%m-%d %H:%M}",
-                std::chrono::floor<std::chrono::seconds>(e.start)).c_str());
+                std::chrono::floor<std::chrono::seconds>(local)).c_str());
 
             ImGui::TableNextColumn();
             ImGui::TextUnformatted(e.note.c_str());
+
+            ImGui::TableNextColumn();
+            if (ImGui::SmallButton("Delete")){toDelete = e.id;}
 
             ImGui::PopID();
         }
@@ -54,6 +60,11 @@ void Ui::drawEntryTable(const std::vector<Entry> &entries) const{
 
         ImGui::EndTable();
     }
+
+    if (toDelete != -1) {
+        app.deleteEntry(toDelete);
+    }
+
     ImGui::End();
 }
 

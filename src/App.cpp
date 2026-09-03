@@ -53,3 +53,8 @@ bool App::endEntry(const char* note, const char* subject) {
 bool App::isTimerRunning() const{
     return openEntry.has_value();
 }
+
+void App::deleteEntry(const int id) {
+    entryStore.deleteEntry(id);
+    saveStore();
+}

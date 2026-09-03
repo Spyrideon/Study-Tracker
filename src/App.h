@@ -19,6 +19,8 @@ public:
     bool endEntry(const char* note, const char* subject);
     [[nodiscard]] bool isTimerRunning() const;
 
+    void deleteEntry(const int id);
+
 private:
     std::optional<Entry> openEntry;
     EntryStore entryStore;

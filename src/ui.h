@@ -18,7 +18,7 @@ private:
     char subjectBuff[20];
     static ImGuiWindowFlags getWindowFlags();
 
-    void drawEntryTable(const std::vector<Entry>& entries) const;
+    void drawEntryTable(const std::vector<Entry>& entries);
     void drawTracker();
 };
 
