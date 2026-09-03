@@ -6,8 +6,11 @@ namespace persistence {
         std::vector<Entry> loadedStore;
         if (!stream) return loadedStore;
         json j;
-        stream >> j;
-        loadedStore = j.get<std::vector<Entry>>();
+        try {
+            stream >> j;
+            loadedStore = j.get<std::vector<Entry>>();
+        } catch (const nlohmann::json::exception&) {return {};}
+
         return loadedStore;
     }
 
