@@ -2,6 +2,7 @@
 #define STUDYTRACKER_UI_H
 
 #include "imgui.h"
+#include "misc/cpp/imgui_stdlib.h"
 #include "Entry.h"
 
 class App;
@@ -14,11 +15,14 @@ public:
 
 private:
     App &app;
-    char noteBuff[50];
-    char subjectBuff[20];
+    std::string noteBuff = "";
+    std::string subjectBuff = "";
 
-    int editId;
-    bool pendingEdit;
+    int editId = -1;
+    bool pendingEdit = false;
+
+    std::string editSubjectBuff = "";
+    std::string editNoteBuff = "";
 
     void drawEntryTable(const std::vector<Entry>& entries);
     void drawTracker();

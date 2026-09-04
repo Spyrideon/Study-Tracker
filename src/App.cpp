@@ -38,7 +38,7 @@ bool App::startEntry() {
     openEntry->start = std::chrono::system_clock::now();
     return true;
 }
-bool App::endEntry(const char* note, const char* subject) {
+bool App::endEntry(const std::string &note, const std::string &subject) {
     if (!openEntry) return false;
     const auto now = std::chrono::system_clock::now();
     openEntry->duration =
