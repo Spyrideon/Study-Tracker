@@ -1,19 +1,11 @@
 #include "ui.h"
 #include "App.h"
 
-Ui::Ui(App &app) : app(app), noteBuff(""), subjectBuff(""){}
+Ui::Ui(App &app) : app(app), noteBuff(""), subjectBuff(""), editId(-1), pendingEdit(false){}
 
 void Ui::render() {
     drawEntryTable(app.getEntries());
     drawTracker();
-}
-
-
-ImGuiWindowFlags Ui::getWindowFlags() {
-    constexpr ImGuiWindowFlags flags =      ImGuiWindowFlags_NoCollapse |
-                                        ImGuiWindowFlags_NoMove |
-                                        ImGuiWindowFlags_NoResize;
-    return flags;
 }
 
 void Ui::drawEntryTable(const std::vector<Entry> &entries){
@@ -52,6 +44,8 @@ void Ui::drawEntryTable(const std::vector<Entry> &entries){
             ImGui::TextUnformatted(e.note.c_str());
 
             ImGui::TableNextColumn();
+            if (ImGui::SmallButton("Edit")){editId = e.id; pendingEdit = true;}
+            ImGui::SameLine();
             if (ImGui::SmallButton("Delete")){toDelete = e.id;}
 
             ImGui::PopID();
@@ -60,12 +54,16 @@ void Ui::drawEntryTable(const std::vector<Entry> &entries){
 
         ImGui::EndTable();
     }
+    ImGui::End();
 
     if (toDelete != -1) {
         app.deleteEntry(toDelete);
     }
-
-    ImGui::End();
+    if (pendingEdit) {
+        ImGui::OpenPopup("Edit Entry");
+        pendingEdit = false;
+    }
+    drawEditPopup();
 }
 
 void Ui::drawTracker() {
@@ -83,4 +81,11 @@ void Ui::drawTracker() {
     }
 
     ImGui::End();
+}
+
+void Ui::drawEditPopup() {
+    if (ImGui::BeginPopupModal("Edit Entry", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+        ImGui::Text("This is a popup lulululululu");
+        ImGui::EndPopup();
+    }
 }

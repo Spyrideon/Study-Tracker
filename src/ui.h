@@ -16,10 +16,13 @@ private:
     App &app;
     char noteBuff[50];
     char subjectBuff[20];
-    static ImGuiWindowFlags getWindowFlags();
+
+    int editId;
+    bool pendingEdit;
 
     void drawEntryTable(const std::vector<Entry>& entries);
     void drawTracker();
+    void drawEditPopup();
 };
 
 #endif //STUDYTRACKER_UI_H
