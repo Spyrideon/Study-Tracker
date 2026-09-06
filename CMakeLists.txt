@@ -24,8 +24,13 @@ add_library(imgui STATIC
         ${IMGUI_DIR}/backends/imgui_impl_sdl2.cpp
         ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
         ${IMGUI_DIR}/misc/cpp/imgui_stdlib.cpp
+        ${IMGUI_DIR}/datepicker/ImGuiDatePicker.cpp
 )
-target_include_directories(imgui PUBLIC ${IMGUI_DIR} ${IMGUI_DIR}/backends ${IMGUI_DIR}/misc/cpp)
+target_include_directories(imgui PUBLIC
+        ${IMGUI_DIR}
+        ${IMGUI_DIR}/backends
+        ${IMGUI_DIR}/misc/cpp
+        ${IMGUI_DIR}/datepicker)
 target_link_libraries(imgui PUBLIC SDL2::SDL2 OpenGL::GL)
 
 
@@ -41,7 +46,8 @@ add_library(StudyTrackerLib
         src/persistence.cpp
         src/persistence.h
         src/App.cpp
-        src/App.h)
+        src/App.h
+        src/EditEntry.h)
 target_include_directories(StudyTrackerLib PUBLIC src)
 target_link_libraries(StudyTrackerLib PUBLIC third_party)
 

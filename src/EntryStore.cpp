@@ -21,6 +21,17 @@ bool EntryStore::deleteEntry(const int id){
     }
     return false;
 }
+void EntryStore::editEntry(const EditEntry &editEntry) {
+    for (int i = 0; i < store.size(); i++) {
+        if (store[i].id == editEntry.id) {
+            store[i].subject = editEntry.subject;
+            //store[i].duration = editEntry.duration;
+            store[i].note = editEntry.note;
+            return;
+        }
+    }
+    return;
+}
 
 const std::vector<Entry>& EntryStore::getAllEntries() const{
     return store;

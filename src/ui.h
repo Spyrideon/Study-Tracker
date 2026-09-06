@@ -22,7 +22,9 @@ private:
     bool pendingEdit = false;
 
     std::string editSubjectBuff = "";
+    int editDuration = 0;
     std::string editNoteBuff = "";
+    tm editDate;
 
     void drawEntryTable(const std::vector<Entry>& entries);
     void drawTracker();

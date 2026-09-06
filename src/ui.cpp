@@ -1,5 +1,7 @@
 #include "ui.h"
 #include "App.h"
+#include "EditEntry.h"
+#include "ImGuiDatePicker.hpp"
 
 Ui::Ui(App &app) : app(app){}
 
@@ -48,6 +50,9 @@ void Ui::drawEntryTable(const std::vector<Entry> &entries){
                 editId = e.id;
                 pendingEdit = true;
                 editSubjectBuff = e.subject;
+                editNoteBuff = e.note;
+                std::time_t tt = std::chrono::system_clock::to_time_t(e.start);
+                editDate = *std::localtime(&tt);
             }
             ImGui::SameLine();
             if (ImGui::SmallButton("Delete")){toDelete = e.id;}
@@ -88,39 +93,36 @@ void Ui::drawTracker() {
 }
 
 void Ui::drawEditPopup() {
+    ImGui::SetNextWindowSize(ImVec2(360, 0), ImGuiCond_Appearing);
 
-    if (ImGui::BeginPopupModal("Edit Entry", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
-        ImGui::Text("Edit entry");
+    if (ImGui::BeginPopupModal("Edit Entry", nullptr)) {
 
-        if (ImGui::BeginTable("editEntryTable", 4)) {
-            ImGui::TableSetupColumn("Subject");
-            ImGui::TableSetupColumn("Duration");
-            ImGui::TableSetupColumn("Date-Started");
-            ImGui::TableSetupColumn("Note");
-            ImGui::TableHeadersRow();
-            ImGui::PushID(0);
-            ImGui::TableNextRow();
+        ImGui::PushItemWidth(-FLT_MIN);
 
-            if (ImGui::InputText("##subject", &editSubjectBuff)){}
-            ImGui::TableNextColumn();
+        ImGui::TextUnformatted("Subject");
+        ImGui::InputText("##subject", &editSubjectBuff);
 
-            if (ImGui::InputText("##duration", &editSubjectBuff)){}
-            ImGui::TableNextColumn();
+        ImGui::TextUnformatted("Duration");
+        ImGui::InputInt("##duration", &editDuration);
 
-            if (ImGui::InputText("##dateStarted", &editSubjectBuff)){}
-            ImGui::TableNextColumn();
+        if (ImGui::DatePicker("##date", editDate)){}
+        ImGui::TableNextColumn();
 
-            if (ImGui::InputText("##note", &editSubjectBuff)){}
-            ImGui::TableNextColumn();
+        ImGui::TextUnformatted("Note");
+        ImGui::InputText("##note", &editNoteBuff);
 
-            ImGui::PopID();
-            ImGui::EndTable();
+        ImGui::PopItemWidth();
+
+        ImGui::Spacing();
+        if (ImGui::Button("Save")) {
+            const EditEntry editEntry(editId, editSubjectBuff, editNoteBuff);
+            app.editEntry(editEntry);
+            editId = -1;
+            ImGui::CloseCurrentPopup();
         }
-
-        ImGui::NewLine();
-        if (ImGui::Button("Save")){ImGui::CloseCurrentPopup();}
         ImGui::SameLine();
         if (ImGui::Button("Cancel")){ImGui::CloseCurrentPopup();}
+
         ImGui::EndPopup();
     }
 }

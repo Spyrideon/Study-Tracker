@@ -4,7 +4,7 @@
 #include "Entry.h"
 #include <string>
 #include <vector>
-#include <chrono>
+#include "EditEntry.h"
 
 class EntryStore {
 public:
@@ -15,6 +15,7 @@ public:
     void addEntry(Entry entry);
 
     bool deleteEntry(int id);
+    void editEntry(const EditEntry& editEntry);
 
     [[nodiscard]] std::vector<Entry> getAllBySubject(const std::string& subject) const;
     [[nodiscard]] const std::vector<Entry>& getAllEntries() const;

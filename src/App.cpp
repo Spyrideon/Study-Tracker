@@ -24,14 +24,6 @@ const std::vector<Entry>& App::getEntries() const{
     return entryStore.getAllEntries();
 }
 
-void App::addEntry() {
-    Entry e;
-    e.note = "This is a test";
-    e.subject = "Math";
-    entryStore.addEntry(e);
-    saveStore();
-}
-
 bool App::startEntry() {
     if (openEntry) return false;
     openEntry.emplace();
@@ -56,5 +48,9 @@ bool App::isTimerRunning() const{
 
 void App::deleteEntry(const int id) {
     entryStore.deleteEntry(id);
+    saveStore();
+}
+void App::editEntry(const EditEntry& editEntry) {
+    entryStore.editEntry(editEntry);
     saveStore();
 }
