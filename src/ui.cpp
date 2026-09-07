@@ -32,10 +32,10 @@ void Ui::drawEntryTable(const std::vector<Entry> &entries){
             ImGui::TableNextRow();
 
             ImGui::TableNextColumn();
-            ImGui::TextUnformatted(e.subject.c_str());     //subject
+            ImGui::TextUnformatted(e.subject.c_str());
 
             ImGui::TableNextColumn();
-            ImGui::Text("%lld min", static_cast<long long>(e.duration.count()));
+            ImGui::Text(formatDuration(e.duration).c_str());
 
             ImGui::TableNextColumn();
             const auto local = std::chrono::current_zone()->to_local(e.start);
@@ -125,4 +125,11 @@ void Ui::drawEditPopup() {
 
         ImGui::EndPopup();
     }
+}
+
+[[nodiscard]] std::string Ui::formatDuration(const std::chrono::minutes d) const{
+    const long long total = d.count();
+    if (total < 60)
+        return std::format("{}m", total);
+    return std::format("{}h{:02d}m", total / 60, static_cast<int>(total % 60));
 }

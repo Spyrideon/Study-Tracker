@@ -21,14 +21,16 @@ private:
     int editId = -1;
     bool pendingEdit = false;
 
-    std::string editSubjectBuff = "";
+    std::string editSubjectBuff;
     int editDuration = 0;
-    std::string editNoteBuff = "";
+    std::string editNoteBuff;
     tm editDate;
 
     void drawEntryTable(const std::vector<Entry>& entries);
     void drawTracker();
     void drawEditPopup();
+
+    [[nodiscard]] std::string formatDuration(std::chrono::minutes d) const;
 };
 
-#endif //STUDYTRACKER_UI_H
+#endif
