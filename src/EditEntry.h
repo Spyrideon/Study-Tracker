@@ -6,8 +6,9 @@
 struct EditEntry {
     const int id;
     const std::string subject;
-    //const int duration;
+    const int duration;
+    const tm start;
     const std::string note;
 };
 
-#endif //STUDYTRACKER_EDITENTRY_H
+#endif

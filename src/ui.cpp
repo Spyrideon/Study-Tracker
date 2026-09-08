@@ -50,6 +50,7 @@ void Ui::drawEntryTable(const std::vector<Entry> &entries){
                 editId = e.id;
                 pendingEdit = true;
                 editSubjectBuff = e.subject;
+                editDuration = e.duration.count();
                 editNoteBuff = e.note;
                 std::time_t tt = std::chrono::system_clock::to_time_t(e.start);
                 editDate = *std::localtime(&tt);
@@ -105,8 +106,11 @@ void Ui::drawEditPopup() {
         ImGui::TextUnformatted("Duration");
         ImGui::InputInt("##duration", &editDuration);
 
-        if (ImGui::DatePicker("##date", editDate)){}
-        ImGui::TableNextColumn();
+        if (ImGui::DatePicker("##date", editDate)) {}
+        ImGui::SetNextItemWidth(-FLT_MIN);
+        ImGui::SliderInt("##hour",   &editDate.tm_hour, 0, 23, "%02dh", ImGuiSliderFlags_AlwaysClamp);
+        ImGui::SetNextItemWidth(-FLT_MIN);
+        ImGui::SliderInt("##minute", &editDate.tm_min, 0, 59, "%02dm", ImGuiSliderFlags_AlwaysClamp);
 
         ImGui::TextUnformatted("Note");
         ImGui::InputText("##note", &editNoteBuff);
@@ -115,7 +119,7 @@ void Ui::drawEditPopup() {
 
         ImGui::Spacing();
         if (ImGui::Button("Save")) {
-            const EditEntry editEntry(editId, editSubjectBuff, editNoteBuff);
+            const EditEntry editEntry(editId, editSubjectBuff, editDuration, editDate, editNoteBuff);
             app.editEntry(editEntry);
             editId = -1;
             ImGui::CloseCurrentPopup();

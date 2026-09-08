@@ -15,8 +15,8 @@ public:
 
 private:
     App &app;
-    std::string noteBuff = "";
-    std::string subjectBuff = "";
+    std::string noteBuff;
+    std::string subjectBuff ;
 
     int editId = -1;
     bool pendingEdit = false;
