@@ -3,20 +3,32 @@
 #include "persistence.h"
 #include <fstream>
 
-App::App() : entryStore(loadStore()) {
+App::App() : entryStore(loadEntryStore()), periodStore(loadPeriodStore()) {
 
 }
 
-std::vector<Entry> App::loadStore() const{
+std::vector<Entry> App::loadEntryStore() const{
     std::ifstream input("test.json");
-    std::vector<Entry> vec = persistence::load(input);
+    std::vector<Entry> vec = persistence::loadEntries(input);
     input.close();
     return vec;
 }
 
-void App::saveStore() const {
+void App::saveEntryStore() const {
     std::ofstream output("test.json");
-    persistence::save(entryStore.getAllEntries(), output);
+    persistence::saveEntries(entryStore.getAllEntries(), output);
+    output.close();
+}
+
+[[nodiscard]] std::vector<Period> App::loadPeriodStore() const {
+    std::ifstream input("period.json");
+    std::vector<Period> vec = persistence::loadPeriods(input);
+    input.close();
+    return vec;
+}
+void App::savePeriodStore() const {
+    std::ofstream output("period.json");
+    persistence::savePeriods(periodStore.getAllPeriods(), output);
     output.close();
 }
 
@@ -39,7 +51,7 @@ bool App::endEntry(const std::string &note, const std::string &subject) {
     openEntry->subject = subject;
     entryStore.addEntry(*openEntry);
     openEntry.reset();
-    saveStore();
+    saveEntryStore();
     return true;
 }
 bool App::isTimerRunning() const{
@@ -48,9 +60,9 @@ bool App::isTimerRunning() const{
 
 void App::deleteEntry(const int id) {
     entryStore.deleteEntry(id);
-    saveStore();
+    saveEntryStore();
 }
 void App::editEntry(const EditEntry& editEntry) {
     entryStore.editEntry(editEntry);
-    saveStore();
+    saveEntryStore();
 }

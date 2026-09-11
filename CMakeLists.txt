@@ -47,7 +47,10 @@ add_library(StudyTrackerLib
         src/persistence.h
         src/App.cpp
         src/App.h
-        src/EditEntry.h)
+        src/EditEntry.h
+        src/Period.h
+        src/PeriodStore.cpp
+        src/PeriodStore.h)
 target_include_directories(StudyTrackerLib PUBLIC src)
 target_link_libraries(StudyTrackerLib PUBLIC third_party)
 

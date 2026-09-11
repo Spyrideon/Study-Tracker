@@ -2,14 +2,19 @@
 #define STUDYTRACKER_PERSISTENCE_H
 
 #include "EntryStore.h"
+#include "Period.h"
 #include <vector>
 #include <iosfwd>
 
 namespace persistence {
 
-    std::vector<Entry> load(std::istream&);
+    std::vector<Entry> loadEntries(std::istream&);
 
-    void save(const std::vector<Entry> &, std::ostream&);
+    void saveEntries(const std::vector<Entry>&, std::ostream&);
+
+    std::vector<Period> loadPeriods(std::istream&);
+
+    void savePeriods(const std::vector<Period>&, std::ostream&);
 
 }
 

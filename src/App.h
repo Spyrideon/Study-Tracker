@@ -2,6 +2,7 @@
 #define STUDYTRACKER_APP_H
 
 #include "EntryStore.h"
+#include "PeriodStore.h"
 #include <optional>
 #include "EditEntry.h"
 
@@ -9,9 +10,11 @@ class App {
 public:
     App();
 
-    [[nodiscard]] std::vector<Entry> loadStore() const;
+    [[nodiscard]] std::vector<Entry> loadEntryStore() const;
+    void saveEntryStore() const;
 
-    void saveStore() const;
+    [[nodiscard]] std::vector<Period> loadPeriodStore() const;
+    void savePeriodStore() const;
 
     [[nodiscard]] const std::vector<Entry>& getEntries() const;
 
@@ -25,6 +28,7 @@ public:
 private:
     std::optional<Entry> openEntry;
     EntryStore entryStore;
+    PeriodStore periodStore;
 };
 
 
