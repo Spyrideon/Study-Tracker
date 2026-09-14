@@ -6,6 +6,7 @@
 Ui::Ui(App &app) : app(app){}
 
 void Ui::render() {
+    drawMenu();
     drawEntryTable(app.getEntries());
     drawTracker();
 }
@@ -130,6 +131,45 @@ void Ui::drawEditPopup() {
         ImGui::EndPopup();
     }
 }
+
+void Ui::drawMenu() {
+    if (ImGui::BeginMainMenuBar()) {
+        if (ImGui::BeginMenu("File")) {
+            ImGui::SetNextItemShortcut(ImGuiMod_Ctrl | ImGuiKey_S, ImGuiInputFlags_Tooltip);
+            if (ImGui::MenuItem("Options", "Ctrl+S")) {
+                pendingOptionsPopup = true;
+            }
+            if (ImGui::BeginMenu("Change record")) {
+
+                ImGui::MenuItem("Placeholder 1");
+                ImGui::MenuItem("Placeholder 2");
+                ImGui::MenuItem("Placeholder 3");
+
+                ImGui::EndMenu();
+            }
+            ImGui::EndMenu();
+        }
+        ImGui::EndMainMenuBar();
+    }
+    if (pendingOptionsPopup) {
+        ImGui::OpenPopup("OptionsPopup");
+        pendingOptionsPopup = false;
+    }
+    drawOptionsPopup();
+}
+
+void Ui::drawOptionsPopup() {
+    ImGui::SetNextWindowSize(ImVec2(360, 100), ImGuiCond_Appearing);
+
+    if (ImGui::BeginPopupModal("OptionsPopup")) {
+
+        if (ImGui::SmallButton("Exit")) {
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
+    }
+}
+
 
 [[nodiscard]] std::string Ui::formatDuration(const std::chrono::minutes d) const{
     const long long total = d.count();

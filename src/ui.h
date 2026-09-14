@@ -15,6 +15,8 @@ public:
 
 private:
     App &app;
+    int pendingOptionsPopup = false;
+
     std::string noteBuff;
     std::string subjectBuff ;
 
@@ -29,6 +31,8 @@ private:
     void drawEntryTable(const std::vector<Entry>& entries);
     void drawTracker();
     void drawEditPopup();
+    void drawMenu();
+    void drawOptionsPopup();
 
     [[nodiscard]] std::string formatDuration(std::chrono::minutes d) const;
 };
