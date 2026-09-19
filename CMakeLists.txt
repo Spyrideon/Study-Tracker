@@ -50,7 +50,8 @@ add_library(StudyTrackerLib
         src/EditEntry.h
         src/Period.h
         src/PeriodStore.cpp
-        src/PeriodStore.h)
+        src/PeriodStore.h
+        src/Settings.h)
 target_include_directories(StudyTrackerLib PUBLIC src)
 target_link_libraries(StudyTrackerLib PUBLIC third_party)
 

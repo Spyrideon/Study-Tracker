@@ -3,6 +3,7 @@
 
 #include "EntryStore.h"
 #include "Period.h"
+#include "Settings.h"
 #include <vector>
 #include <iosfwd>
 
@@ -15,6 +16,10 @@ namespace persistence {
     std::vector<Period> loadPeriods(std::istream&);
 
     void savePeriods(const std::vector<Period>&, std::ostream&);
+
+    Settings loadSettings(std::istream&);
+
+    void saveSettings(const Settings&, std::ostream&);
 
 }
 
