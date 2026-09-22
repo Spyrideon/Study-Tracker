@@ -96,3 +96,15 @@ void App::editEntry(const EditEntry& editEntry) {
 [[nodiscard]] std::string App::entriesPathFor(const int id) const {
     return "entries" + std::to_string(id) + ".json";
 }
+
+[[nodiscard]] std::vector<Period> App::getPeriods() const {
+    return periodStore.getAllPeriods();
+}
+
+[[nodiscard]] int App::getActivePeriodId() const {
+    return settings.activePeriodId;
+}
+
+[[nodiscard]] const Period* App::getPeriodById(const int id) const {
+    return periodStore.getById(id);
+}

@@ -6,7 +6,7 @@
 #include "json.hpp"
 
 struct Period {
-    int id;
+    int id = -1;
     std::string name;
     std::vector<std::string> subjects;
 };

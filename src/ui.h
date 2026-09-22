@@ -28,11 +28,14 @@ private:
     std::string editNoteBuff;
     tm editDate;
 
+    int optionsSelectedId = -1;
+
     void drawEntryTable(const std::vector<Entry>& entries);
     void drawTracker();
     void drawEditPopup();
     void drawMenu();
     void drawOptionsPopup();
+    void drawPeriodCombo();
 
     [[nodiscard]] std::string formatDuration(std::chrono::minutes d) const;
 };

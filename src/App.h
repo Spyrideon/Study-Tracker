@@ -29,6 +29,9 @@ public:
     void deleteEntry(int id);
     void editEntry(const EditEntry& editEntry);
 
+    [[nodiscard]] std::vector<Period> getPeriods() const;
+    [[nodiscard]] int getActivePeriodId() const;
+    [[nodiscard]] const Period* getPeriodById(int) const;
     void addPeriod();
     void addSubjectToPeriod();
 

@@ -14,7 +14,7 @@ public:
     int addPeriod(Period period);
     void editPeriod(const Period& editPeriod);
     void deletePeriod(int id);
-    const Period* getById(int id);
+    [[nodiscard]] const Period* getById(int id) const;
 
 private:
     std::vector<Period> store;

@@ -33,7 +33,7 @@ void PeriodStore::deletePeriod(const int id) {
         }
     }
 }
-const Period* PeriodStore::getById(int id) {
+[[nodiscard]] const Period* PeriodStore::getById(const int id) const{
     for (const auto& p : store) {
         if (p.id == id)
             return &p;

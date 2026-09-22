@@ -138,6 +138,7 @@ void Ui::drawMenu() {
             ImGui::SetNextItemShortcut(ImGuiMod_Ctrl | ImGuiKey_S, ImGuiInputFlags_Tooltip);
             if (ImGui::MenuItem("Options", "Ctrl+S")) {
                 pendingOptionsPopup = true;
+                optionsSelectedId = app.getActivePeriodId();
             }
             if (ImGui::BeginMenu("Change record")) {
 
@@ -162,11 +163,36 @@ void Ui::drawOptionsPopup() {
     ImGui::SetNextWindowSize(ImVec2(360, 100), ImGuiCond_Appearing);
 
     if (ImGui::BeginPopupModal("OptionsPopup")) {
+        drawPeriodCombo();
+
+
+        ImGui::Separator();
 
         if (ImGui::SmallButton("Exit")) {
             ImGui::CloseCurrentPopup();
         }
         ImGui::EndPopup();
+    }
+}
+
+void Ui::drawPeriodCombo() {
+    const auto& periods = app.getPeriods();
+
+    const char* preview = "Select a period";
+    for (const Period& p : periods)
+        if (p.id == optionsSelectedId) {
+            preview = p.name.c_str();
+            break;
+        }
+    if (ImGui::BeginCombo("##periodSelect", preview)) {
+        for (const Period& p : periods) {
+            const bool selected = (p.id == optionsSelectedId);
+            if (ImGui::Selectable(p.name.c_str(), selected))
+                optionsSelectedId = p.id;
+            if (selected)
+                ImGui::SetItemDefaultFocus();
+        }
+        ImGui::EndCombo();
     }
 }
 
