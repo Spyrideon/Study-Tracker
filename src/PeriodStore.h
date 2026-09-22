@@ -9,7 +9,12 @@ public:
     PeriodStore() = default;
     explicit PeriodStore(const std::vector<Period> &str);
 
-    const std::vector<Period>& getAllPeriods() const;
+    [[nodiscard]] const std::vector<Period>& getAllPeriods() const;
+
+    int addPeriod(Period period);
+    void editPeriod(const Period& editPeriod);
+    void deletePeriod(int id);
+    const Period* getById(int id);
 
 private:
     std::vector<Period> store;

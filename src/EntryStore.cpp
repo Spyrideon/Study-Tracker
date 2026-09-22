@@ -13,7 +13,6 @@ EntryStore::EntryStore(const std::vector<Entry> &str) : store(str){
 void EntryStore::addEntry(Entry entry) {
     entry.id = nextId++;
     store.insert(store.begin(), std::move(entry));
-    //store.push_back(std::move(entry));
 }
 
 bool EntryStore::deleteEntry(const int id){

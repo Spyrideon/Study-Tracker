@@ -26,14 +26,20 @@ public:
     bool endEntry(const std::string &note, const std::string &subject);
     [[nodiscard]] bool isTimerRunning() const;
 
-    void deleteEntry(const int id);
+    void deleteEntry(int id);
     void editEntry(const EditEntry& editEntry);
 
+    void addPeriod();
+    void addSubjectToPeriod();
+
 private:
-    std::optional<Entry> openEntry;
-    EntryStore entryStore;
     PeriodStore periodStore;
     Settings settings;
+    EntryStore entryStore;
+
+    std::optional<Entry> openEntry;
+
+    [[nodiscard]] std::string entriesPathFor(int id) const;
 };
 
 

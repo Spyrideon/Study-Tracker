@@ -3,19 +3,32 @@
 #include "persistence.h"
 #include <fstream>
 
-App::App() : entryStore(loadEntryStore()), periodStore(loadPeriodStore()) {
+App::App() : periodStore(loadPeriodStore()), settings(loadSettings()) {
 
+    if (periodStore.getById(settings.activePeriodId) == nullptr) {
+        const auto& periods = periodStore.getAllPeriods();
+
+        if (!periods.empty()) {
+            settings.activePeriodId = periods.back().id;
+        } else {
+            settings.activePeriodId = periodStore.addPeriod(Period{ .name = "Default", .subjects = {} });
+            savePeriodStore();
+        }
+        saveSettings();
+    }
+
+    entryStore = EntryStore(loadEntryStore());
 }
 
 std::vector<Entry> App::loadEntryStore() const{
-    std::ifstream input("test.json");
+    std::ifstream input(entriesPathFor(settings.activePeriodId));
     std::vector<Entry> vec = persistence::loadEntries(input);
     input.close();
     return vec;
 }
 
 void App::saveEntryStore() const {
-    std::ofstream output("test.json");
+    std::ofstream output(entriesPathFor(settings.activePeriodId));
     persistence::saveEntries(entryStore.getAllEntries(), output);
     output.close();
 }
@@ -78,4 +91,8 @@ void App::deleteEntry(const int id) {
 void App::editEntry(const EditEntry& editEntry) {
     entryStore.editEntry(editEntry);
     saveEntryStore();
+}
+
+[[nodiscard]] std::string App::entriesPathFor(const int id) const {
+    return "entries" + std::to_string(id) + ".json";
 }
