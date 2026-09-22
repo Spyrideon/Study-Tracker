@@ -9,15 +9,15 @@
 
 namespace persistence {
 
-    std::vector<Entry> loadEntries(std::istream&);
+    [[nodiscard]] std::vector<Entry> loadEntries(std::istream&);
 
     void saveEntries(const std::vector<Entry>&, std::ostream&);
 
-    std::vector<Period> loadPeriods(std::istream&);
+    [[nodiscard]] std::vector<Period> loadPeriods(std::istream&);
 
     void savePeriods(const std::vector<Period>&, std::ostream&);
 
-    Settings loadSettings(std::istream&);
+    [[nodiscard]] Settings loadSettings(std::istream&);
 
     void saveSettings(const Settings&, std::ostream&);
 

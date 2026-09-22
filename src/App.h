@@ -3,6 +3,7 @@
 
 #include "EntryStore.h"
 #include "PeriodStore.h"
+#include "Settings.h"
 #include <optional>
 #include "EditEntry.h"
 
@@ -15,6 +16,9 @@ public:
 
     [[nodiscard]] std::vector<Period> loadPeriodStore() const;
     void savePeriodStore() const;
+
+    [[nodiscard]] Settings loadSettings() const;
+    void saveSettings() const;
 
     [[nodiscard]] const std::vector<Entry>& getEntries() const;
 
@@ -29,6 +33,7 @@ private:
     std::optional<Entry> openEntry;
     EntryStore entryStore;
     PeriodStore periodStore;
+    Settings settings;
 };
 
 

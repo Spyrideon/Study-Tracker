@@ -32,6 +32,19 @@ void App::savePeriodStore() const {
     output.close();
 }
 
+[[nodiscard]] Settings App::loadSettings() const{
+    std::ifstream input("settings.json");
+    Settings sett = persistence::loadSettings(input);
+    input.close();
+    return sett;
+}
+
+void App::saveSettings() const {
+    std::ofstream output("settings.json");
+    persistence::saveSettings(settings, output);
+    output.close();
+}
+
 const std::vector<Entry>& App::getEntries() const{
     return entryStore.getAllEntries();
 }
