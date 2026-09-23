@@ -165,20 +165,24 @@ void Ui::drawOptionsPopup() {
     if (ImGui::BeginPopupModal("OptionsPopup")) {
         drawPeriodCombo();
 
-        const Period* selected = app.getPeriodById(optionsSelectedId);
-        if (selected) {
-
+        if (const Period* selected = app.getPeriodById(optionsSelectedId)) {
+            ImGui::InputText("##periodSubject", &periodSubjectBuff);
+            ImGui::SameLine();
+            if (ImGui::Button("Add subject")) {
+                app.addSubjectToPeriod(selected->id, periodSubjectBuff);
+                periodSubjectBuff = "";
+            }
         }else {
             ImGui::TextDisabled("Select a period to edit.");
         }
 
         ImGui::Separator();
 
-        ImGui::InputText("##periodName", &periodNameBuffer);
+        ImGui::InputText("##periodName", &periodNameBuff);
         ImGui::SameLine();
         if (ImGui::Button("New period")) {
-            app.addPeriod(periodNameBuffer);
-            periodNameBuffer = "";
+            app.addPeriod(periodNameBuff);
+            periodNameBuff = "";
         }
 
         if (ImGui::SmallButton("Exit")) {
@@ -197,7 +201,7 @@ void Ui::drawPeriodCombo() {
             preview = p.name.c_str();
             break;
         }
-    if (ImGui::BeginCombo("##periodSelect", preview)) {
+    if (ImGui::BeginCombo("##periodSelect", preview, ImGuiComboFlags_WidthFitPreview)) {
         for (const Period& p : periods) {
             const bool selected = (p.id == optionsSelectedId);
             if (ImGui::Selectable(p.name.c_str(), selected))

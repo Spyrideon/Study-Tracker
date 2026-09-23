@@ -29,7 +29,8 @@ private:
     tm editDate;
 
     int optionsSelectedId = -1;
-    std::string periodNameBuffer;
+    std::string periodNameBuff;
+    std::string periodSubjectBuff;
 
     void drawEntryTable(const std::vector<Entry>& entries);
     void drawTracker();
