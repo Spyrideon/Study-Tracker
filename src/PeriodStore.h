@@ -12,13 +12,17 @@ public:
     [[nodiscard]] const std::vector<Period>& getAllPeriods() const;
 
     int addPeriod(Period period);
-    void editPeriod(const Period& editPeriod);
-    void deletePeriod(int id);
+    bool rename(int, const std::string&);
+    bool addSubject(int, const std::string&);
+    bool removeSubject(int, const std::string&);
+    bool deletePeriod(int id);
     [[nodiscard]] const Period* getById(int id) const;
 
 private:
     std::vector<Period> store;
     int nextId = 0;
+
+    Period* find(int id);
 };
 
 

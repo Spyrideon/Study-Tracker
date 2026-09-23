@@ -165,8 +165,21 @@ void Ui::drawOptionsPopup() {
     if (ImGui::BeginPopupModal("OptionsPopup")) {
         drawPeriodCombo();
 
+        const Period* selected = app.getPeriodById(optionsSelectedId);
+        if (selected) {
+
+        }else {
+            ImGui::TextDisabled("Select a period to edit.");
+        }
 
         ImGui::Separator();
+
+        ImGui::InputText("##periodName", &periodNameBuffer);
+        ImGui::SameLine();
+        if (ImGui::Button("New period")) {
+            app.addPeriod(periodNameBuffer);
+            periodNameBuffer = "";
+        }
 
         if (ImGui::SmallButton("Exit")) {
             ImGui::CloseCurrentPopup();

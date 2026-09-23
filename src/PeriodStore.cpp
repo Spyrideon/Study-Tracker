@@ -1,4 +1,6 @@
 #include "PeriodStore.h"
+#include <algorithm>
+#include <vector>
 
 PeriodStore::PeriodStore(const std::vector<Period> &str) : store(str){
     for (const auto& p : store)
@@ -15,28 +17,48 @@ int PeriodStore::addPeriod(Period period) {
     store.push_back(std::move(period));
     return id;
 }
-void PeriodStore::editPeriod(const Period& editPeriod) {
-    for (auto& p : store) {
-        if (p.id == editPeriod.id) {
-            p.name = editPeriod.name;
-            p.subjects = editPeriod.subjects;
-            return;
-        }
-    }
 
+bool PeriodStore::rename(const int id, const std::string &name) {
+    if (Period* p = find(id)) {
+        p->name = name; return true;
+    }
+    return false;
 }
-void PeriodStore::deletePeriod(const int id) {
+
+bool PeriodStore::addSubject(const int id, const std::string &subject) {
+    Period* p = find(id);
+    auto& v = p->subjects;
+    const auto before = v.size();
+    v.push_back(subject);
+    return v.size() != before;
+}
+
+bool PeriodStore::removeSubject(const int id, const std::string &subject) {
+    Period* p = find(id);
+    auto& v = p->subjects;
+    const auto before = v.size();
+    v.erase(std::remove(v.begin(), v.end(), subject), v.end());
+    return v.size() != before;
+}
+
+bool PeriodStore::deletePeriod(const int id) {
     for (int i = 0; i < store.size(); i++) {
         if (store[i].id == id) {
             store.erase(store.begin() + i);
-            return;
+            return true;
         }
     }
+    return false;
 }
 [[nodiscard]] const Period* PeriodStore::getById(const int id) const{
     for (const auto& p : store) {
         if (p.id == id)
             return &p;
     }
+    return nullptr;
+}
+
+Period* PeriodStore::find(int id) {
+    for (auto& p : store) if (p.id == id) return &p;
     return nullptr;
 }

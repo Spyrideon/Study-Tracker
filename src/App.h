@@ -32,8 +32,8 @@ public:
     [[nodiscard]] std::vector<Period> getPeriods() const;
     [[nodiscard]] int getActivePeriodId() const;
     [[nodiscard]] const Period* getPeriodById(int) const;
-    void addPeriod();
-    void addSubjectToPeriod();
+    void addPeriod(const std::string &name);
+    void addSubjectToPeriod(int, const std::string &subject);
 
 private:
     PeriodStore periodStore;

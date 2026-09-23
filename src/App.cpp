@@ -93,6 +93,16 @@ void App::editEntry(const EditEntry& editEntry) {
     saveEntryStore();
 }
 
+void App::addPeriod(const std::string &name){
+    Period p{.name = name, .subjects = {}};
+    periodStore.addPeriod(p);
+    savePeriodStore();
+}
+void App::addSubjectToPeriod(const int id, const std::string &subject) {
+    periodStore.addSubject(id, subject);
+    savePeriodStore();
+}
+
 [[nodiscard]] std::string App::entriesPathFor(const int id) const {
     return "entries" + std::to_string(id) + ".json";
 }
