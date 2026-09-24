@@ -28,7 +28,8 @@ private:
     std::string editNoteBuff;
     tm editDate;
 
-    int optionsSelectedId = -1;
+    int optionsSelPeriodId = -1;
+    int optionsSelSubjectIdx = -1;
     std::string periodNameBuff;
     std::string periodSubjectBuff;
 

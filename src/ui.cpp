@@ -138,7 +138,7 @@ void Ui::drawMenu() {
             ImGui::SetNextItemShortcut(ImGuiMod_Ctrl | ImGuiKey_S, ImGuiInputFlags_Tooltip);
             if (ImGui::MenuItem("Options", "Ctrl+S")) {
                 pendingOptionsPopup = true;
-                optionsSelectedId = app.getActivePeriodId();
+                optionsSelPeriodId = app.getActivePeriodId();
             }
             if (ImGui::BeginMenu("Change record")) {
 
@@ -160,12 +160,12 @@ void Ui::drawMenu() {
 }
 
 void Ui::drawOptionsPopup() {
-    ImGui::SetNextWindowSize(ImVec2(360, 100), ImGuiCond_Appearing);
+    ImGui::SetNextWindowSize(ImVec2(360, 0), ImGuiCond_Appearing);
 
     if (ImGui::BeginPopupModal("OptionsPopup")) {
         drawPeriodCombo();
 
-        if (const Period* selected = app.getPeriodById(optionsSelectedId)) {
+        if (const Period* selected = app.getPeriodById(optionsSelPeriodId)) {
             ImGui::InputText("##periodSubject", &periodSubjectBuff);
             ImGui::SameLine();
             if (ImGui::Button("Add subject")) {
@@ -195,21 +195,48 @@ void Ui::drawOptionsPopup() {
 void Ui::drawPeriodCombo() {
     const auto& periods = app.getPeriods();
 
-    const char* preview = "Select a period";
-    for (const Period& p : periods)
-        if (p.id == optionsSelectedId) {
-            preview = p.name.c_str();
-            break;
-        }
-    if (ImGui::BeginCombo("##periodSelect", preview, ImGuiComboFlags_WidthFitPreview)) {
+    auto it = std::find_if(periods.begin(),
+                                                                periods.end(),
+                                                                [&] (const Period& p) {return p.id == optionsSelPeriodId; });
+
+    const Period* current = (it != periods.end()) ? &*it : nullptr;
+
+    const char* periodPreview = current ? current->name.c_str() : "Select a period";
+
+    if (ImGui::BeginCombo("##periodSelect", periodPreview, ImGuiComboFlags_WidthFitPreview)) {
         for (const Period& p : periods) {
-            const bool selected = (p.id == optionsSelectedId);
-            if (ImGui::Selectable(p.name.c_str(), selected))
-                optionsSelectedId = p.id;
+            const bool selected = (p.id == optionsSelPeriodId);
+            if (ImGui::Selectable(p.name.c_str(), selected)) {
+                optionsSelPeriodId = p.id;
+                optionsSelSubjectIdx = 0;
+                current = &p;
+            }
             if (selected)
                 ImGui::SetItemDefaultFocus();
         }
         ImGui::EndCombo();
+    }
+
+    ImGui::SameLine();
+
+    if (current) {
+        const int subjCount = static_cast<int>(current->subjects.size());
+        if (optionsSelSubjectIdx < 0 || optionsSelSubjectIdx >= subjCount)
+            optionsSelSubjectIdx = 0;
+
+        const char* subjectPreview = (subjCount == 0) ? "No subjects yet" : current->subjects[optionsSelSubjectIdx].c_str();
+        if (ImGui::BeginCombo("##subjectSelect", subjectPreview, ImGuiComboFlags_WidthFitPreview)) {
+            for (int i = 0; i < static_cast<int>(current->subjects.size()); ++i) {
+                const std::string& s = current->subjects[i];
+                const bool selectedSubj = (i == optionsSelSubjectIdx);
+
+                if (ImGui::Selectable(s.c_str(), selectedSubj))
+                    optionsSelSubjectIdx = i;
+                if (selectedSubj)
+                    ImGui::SetItemDefaultFocus();
+            }
+            ImGui::EndCombo();
+        }
     }
 }
 
