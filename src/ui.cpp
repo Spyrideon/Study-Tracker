@@ -164,7 +164,7 @@ void Ui::drawOptionsPopup() {
         drawPeriodCombo();
 
         if (const Period* selected = app.getPeriodById(optionsSelPeriodId)) {
-            ImGui::InputText("##periodSubject", &periodSubjectBuff, ImGuiInputTextFlags_CharsNoBlank);
+            ImGui::InputText("##periodSubject", &periodSubjectBuff);
             ImGui::SameLine();
             if (ImGui::Button("Add subject") && !(periodSubjectBuff.empty())) {
                 app.addSubject(selected->id, periodSubjectBuff);

@@ -28,10 +28,12 @@ bool PeriodStore::rename(const int id, const std::string &name) {
 bool PeriodStore::addSubject(const int id, const std::string &subject) {
     Period* p = find(id);
     if (!p) return false;
+
     auto& v = p->subjects;
-    const auto before = v.size();
+    if (std::find(v.begin(), v.end(), subject) != v.end()) return false;
+
     v.push_back(subject);
-    return v.size() != before;
+    return true;
 }
 
 bool PeriodStore::deleteSubject(const int id, const std::string &subject) {
