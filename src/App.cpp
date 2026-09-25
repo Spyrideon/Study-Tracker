@@ -98,8 +98,13 @@ void App::addPeriod(const std::string &name){
     periodStore.addPeriod(p);
     savePeriodStore();
 }
-void App::addSubjectToPeriod(const int id, const std::string &subject) {
+void App::addSubject(const int id, const std::string &subject) {
     periodStore.addSubject(id, subject);
+    savePeriodStore();
+}
+
+void App::deleteSubject(const int id,  const std::string& subject) {
+    periodStore.deleteSubject(id, subject);
     savePeriodStore();
 }
 
@@ -107,7 +112,7 @@ void App::addSubjectToPeriod(const int id, const std::string &subject) {
     return "entries" + std::to_string(id) + ".json";
 }
 
-[[nodiscard]] std::vector<Period> App::getPeriods() const {
+[[nodiscard]] const std::vector<Period>& App::getPeriods() const {
     return periodStore.getAllPeriods();
 }
 

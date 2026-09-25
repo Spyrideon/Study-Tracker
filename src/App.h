@@ -29,11 +29,13 @@ public:
     void deleteEntry(int id);
     void editEntry(const EditEntry& editEntry);
 
-    [[nodiscard]] std::vector<Period> getPeriods() const;
+    [[nodiscard]] const std::vector<Period>& getPeriods() const;
     [[nodiscard]] int getActivePeriodId() const;
     [[nodiscard]] const Period* getPeriodById(int) const;
     void addPeriod(const std::string &name);
-    void addSubjectToPeriod(int, const std::string &subject);
+    void addSubject(int, const std::string &subject);
+    void deleteSubject(int, const std::string&);
+    void editSubject(int, const std::string&, const std::string&);
 
 private:
     PeriodStore periodStore;

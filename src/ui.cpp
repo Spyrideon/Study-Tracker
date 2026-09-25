@@ -160,17 +160,19 @@ void Ui::drawMenu() {
 }
 
 void Ui::drawOptionsPopup() {
-    ImGui::SetNextWindowSize(ImVec2(360, 0), ImGuiCond_Appearing);
-
-    if (ImGui::BeginPopupModal("OptionsPopup")) {
+    if (ImGui::BeginPopupModal("OptionsPopup", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
         drawPeriodCombo();
 
         if (const Period* selected = app.getPeriodById(optionsSelPeriodId)) {
-            ImGui::InputText("##periodSubject", &periodSubjectBuff);
+            ImGui::InputText("##periodSubject", &periodSubjectBuff, ImGuiInputTextFlags_CharsNoBlank);
             ImGui::SameLine();
-            if (ImGui::Button("Add subject")) {
-                app.addSubjectToPeriod(selected->id, periodSubjectBuff);
-                periodSubjectBuff = "";
+            if (ImGui::Button("Add subject") && !(periodSubjectBuff.empty())) {
+                app.addSubject(selected->id, periodSubjectBuff);
+                periodSubjectBuff.clear();
+            }
+            else {
+                ImGui::SameLine();
+                ImGui::TextDisabled("Input a subject name.");
             }
         }else {
             ImGui::TextDisabled("Select a period to edit.");
@@ -180,9 +182,13 @@ void Ui::drawOptionsPopup() {
 
         ImGui::InputText("##periodName", &periodNameBuff);
         ImGui::SameLine();
-        if (ImGui::Button("New period")) {
+        if (ImGui::Button("New period") && !periodNameBuff.empty()) {
             app.addPeriod(periodNameBuff);
-            periodNameBuff = "";
+            periodNameBuff.clear();
+        }
+        else {
+            ImGui::SameLine();
+            ImGui::TextDisabled("Input a period name");
         }
 
         if (ImGui::SmallButton("Exit")) {
@@ -238,6 +244,17 @@ void Ui::drawPeriodCombo() {
             ImGui::EndCombo();
         }
     }
+
+    if (current && !current->subjects.empty()) {
+        ImGui::SameLine();
+        if (ImGui::Button("Delete selected subject")) {
+            const std::string toDelete = current->subjects[optionsSelSubjectIdx];
+            app.deleteSubject(current->id, toDelete);
+            optionsSelSubjectIdx = -1;
+        }
+    }
+
+
 }
 
 

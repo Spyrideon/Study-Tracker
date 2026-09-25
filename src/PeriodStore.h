@@ -14,7 +14,7 @@ public:
     int addPeriod(Period period);
     bool rename(int, const std::string&);
     bool addSubject(int, const std::string&);
-    bool removeSubject(int, const std::string&);
+    bool deleteSubject(int, const std::string&);
     bool deletePeriod(int id);
     [[nodiscard]] const Period* getById(int id) const;
 
