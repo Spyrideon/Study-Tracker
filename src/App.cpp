@@ -134,6 +134,10 @@ bool App::swapActivePeriod(const int id) {
     return settings.activePeriodId;
 }
 
+const Period& App::getActivePeriod() const {
+    return *periodStore.getById(settings.activePeriodId);
+}
+
 [[nodiscard]] const Period* App::getPeriodById(const int id) const {
     return periodStore.getById(id);
 }

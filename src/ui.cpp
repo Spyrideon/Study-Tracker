@@ -2,6 +2,7 @@
 #include "App.h"
 #include "EditEntry.h"
 #include "ImGuiDatePicker.hpp"
+#include <algorithm>
 
 Ui::Ui(App &app) : app(app){}
 
@@ -78,16 +79,30 @@ void Ui::drawEntryTable(const std::vector<Entry> &entries){
 }
 
 void Ui::drawTracker() {
-    ImGui::Begin("Tracker", nullptr);
+    ImGui::Begin("Tracker");
 
+    const bool running = app.isTimerRunning();
+
+    ImGui::BeginDisabled(running);
     if (ImGui::Button("Start Timer"))
         app.startEntry();
-    if (app.isTimerRunning()) {
+    ImGui::EndDisabled();
+
+    if (running) {
+        const auto& subjects = app.getActivePeriod().subjects;
+
+        if (std::ranges::find(subjects, subjectBuff) == subjects.end())
+            subjectBuff = subjects.empty() ? "" : subjects.front();
+
         ImGui::SameLine();
+        ImGui::BeginDisabled(subjectBuff.empty());
         if (ImGui::Button("Stop Timer")) {
             app.endEntry(noteBuff, subjectBuff);
+            noteBuff.clear();
         }
-        ImGui::InputText("Subject", &subjectBuff);
+        ImGui::EndDisabled();
+
+        drawSubjectCombo("##trackerSubject", subjects, subjectBuff);
         ImGui::InputText("Note", &noteBuff);
     }
 
@@ -102,7 +117,7 @@ void Ui::drawEditPopup() {
         ImGui::PushItemWidth(-FLT_MIN);
 
         ImGui::TextUnformatted("Subject");
-        ImGui::InputText("##subject", &editSubjectBuff);
+        drawSubjectCombo("##editSubject", app.getActivePeriod().subjects, editSubjectBuff);
 
         ImGui::TextUnformatted("Duration");
         ImGui::InputInt("##duration", &editDuration);
@@ -260,6 +275,42 @@ void Ui::drawPeriodCombo() {
 
 }
 
+void Ui::drawSubjectCombo(const char* id,
+                          const std::vector<std::string>& subjects,
+                          std::string& selection) {
+    if (subjects.empty() && selection.empty()) {
+        ImGui::TextDisabled("No subjects in this period - add some via File > Options.");
+        return;
+    }
+
+    const bool orphaned = !selection.empty() &&
+                          std::ranges::find(subjects, selection) == subjects.end();
+
+    ImGui::SetNextItemWidth(-FLT_MIN);
+
+    if (orphaned)
+        ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyleColorVec4(ImGuiCol_TextDisabled));
+    const bool open = ImGui::BeginCombo(id, selection.c_str());
+    if (orphaned)
+        ImGui::PopStyleColor();
+
+    if (open) {
+        if (orphaned) {
+            ImGui::BeginDisabled();
+            ImGui::Selectable(selection.c_str(), true);
+            ImGui::EndDisabled();
+            ImGui::Separator();
+        }
+        for (const std::string& s : subjects) {
+            const bool selected = (s == selection);
+            if (ImGui::Selectable(s.c_str(), selected))
+                selection = s;
+            if (selected)
+                ImGui::SetItemDefaultFocus();
+        }
+        ImGui::EndCombo();
+    }
+}
 
 [[nodiscard]] std::string Ui::formatDuration(const std::chrono::minutes d) const{
     const long long total = d.count();

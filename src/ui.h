@@ -3,6 +3,7 @@
 
 #include "imgui.h"
 #include "misc/cpp/imgui_stdlib.h"
+#include "Period.h"
 #include "Entry.h"
 
 class App;
@@ -39,6 +40,7 @@ private:
     void drawMenu();
     void drawOptionsPopup();
     void drawPeriodCombo();
+    void drawSubjectCombo(const char* id, const std::vector<std::string>& subjects, std::string& selection);
 
     [[nodiscard]] std::string formatDuration(std::chrono::minutes d) const;
 };
