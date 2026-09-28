@@ -108,6 +108,20 @@ void App::deleteSubject(const int id,  const std::string& subject) {
     savePeriodStore();
 }
 
+bool App::swapActivePeriod(const int id) {
+    if (id == settings.activePeriodId) return false;
+    if (periodStore.getById(id) == nullptr) return false;
+    if (openEntry) return false;
+
+    saveEntryStore();
+
+    settings.activePeriodId = id;
+    saveSettings();
+
+    entryStore = EntryStore(loadEntryStore());
+    return true;
+}
+
 [[nodiscard]] std::string App::entriesPathFor(const int id) const {
     return "entries" + std::to_string(id) + ".json";
 }

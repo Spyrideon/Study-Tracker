@@ -140,12 +140,15 @@ void Ui::drawMenu() {
                 pendingOptionsPopup = true;
                 optionsSelPeriodId = app.getActivePeriodId();
             }
-            if (ImGui::BeginMenu("Change record")) {
+            if (ImGui::BeginMenu("Change record", !app.isTimerRunning())) {
+                const int activeId = app.getActivePeriodId();
 
-                ImGui::MenuItem("Placeholder 1");
-                ImGui::MenuItem("Placeholder 2");
-                ImGui::MenuItem("Placeholder 3");
-
+                for (const Period& p : app.getPeriods()) {
+                    ImGui::PushID(p.id);
+                    if (ImGui::MenuItem(p.name.c_str(), nullptr, p.id == activeId))
+                        app.swapActivePeriod(p.id);
+                    ImGui::PopID();
+                }
                 ImGui::EndMenu();
             }
             ImGui::EndMenu();

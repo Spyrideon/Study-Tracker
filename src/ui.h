@@ -15,7 +15,7 @@ public:
 
 private:
     App &app;
-    int pendingOptionsPopup = false;
+    bool pendingOptionsPopup = false;
 
     std::string noteBuff;
     std::string subjectBuff ;
