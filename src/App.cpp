@@ -2,21 +2,60 @@
 
 #include "persistence.h"
 #include <fstream>
+#include <filesystem>
 
-App::App() : entryStore(loadStore()) {
+App::App() : periodStore(loadPeriodStore()), settings(loadSettings()) {
 
+    if (periodStore.getById(settings.activePeriodId) == nullptr) {
+        const auto& periods = periodStore.getAllPeriods();
+
+        if (!periods.empty()) {
+            settings.activePeriodId = periods.back().id;
+        } else {
+            settings.activePeriodId = periodStore.addPeriod(Period{ .name = "Default", .subjects = {} });
+            savePeriodStore();
+        }
+        saveSettings();
+    }
+
+    entryStore = EntryStore(loadEntryStore());
 }
 
-std::vector<Entry> App::loadStore() const{
-    std::ifstream input("test.json");
-    std::vector<Entry> vec = persistence::load(input);
+std::vector<Entry> App::loadEntryStore() const{
+    std::ifstream input(entriesPathFor(settings.activePeriodId));
+    std::vector<Entry> vec = persistence::loadEntries(input);
     input.close();
     return vec;
 }
 
-void App::saveStore() const {
-    std::ofstream output("test.json");
-    persistence::save(entryStore.getAllEntries(), output);
+void App::saveEntryStore() const {
+    std::ofstream output(entriesPathFor(settings.activePeriodId));
+    persistence::saveEntries(entryStore.getAllEntries(), output);
+    output.close();
+}
+
+[[nodiscard]] std::vector<Period> App::loadPeriodStore() const {
+    std::ifstream input("period.json");
+    std::vector<Period> vec = persistence::loadPeriods(input);
+    input.close();
+    return vec;
+}
+void App::savePeriodStore() const {
+    std::ofstream output("period.json");
+    persistence::savePeriods(periodStore.getAllPeriods(), output);
+    output.close();
+}
+
+[[nodiscard]] Settings App::loadSettings() const{
+    std::ifstream input("settings.json");
+    Settings sett = persistence::loadSettings(input);
+    input.close();
+    return sett;
+}
+
+void App::saveSettings() const {
+    std::ofstream output("settings.json");
+    persistence::saveSettings(settings, output);
     output.close();
 }
 
@@ -39,7 +78,7 @@ bool App::endEntry(const std::string &note, const std::string &subject) {
     openEntry->subject = subject;
     entryStore.addEntry(*openEntry);
     openEntry.reset();
-    saveStore();
+    saveEntryStore();
     return true;
 }
 bool App::isTimerRunning() const{
@@ -48,9 +87,77 @@ bool App::isTimerRunning() const{
 
 void App::deleteEntry(const int id) {
     entryStore.deleteEntry(id);
-    saveStore();
+    saveEntryStore();
 }
 void App::editEntry(const EditEntry& editEntry) {
     entryStore.editEntry(editEntry);
-    saveStore();
+    saveEntryStore();
+}
+
+void App::addPeriod(const std::string &name){
+    Period p{.name = name, .subjects = {}};
+    periodStore.addPeriod(p);
+    savePeriodStore();
+}
+void App::addSubject(const int id, const std::string &subject) {
+    periodStore.addSubject(id, subject);
+    savePeriodStore();
+}
+
+void App::deleteSubject(const int id,  const std::string& subject) {
+    periodStore.deleteSubject(id, subject);
+    savePeriodStore();
+}
+
+bool App::swapActivePeriod(const int id) {
+    if (id == settings.activePeriodId) return false;
+    if (periodStore.getById(id) == nullptr) return false;
+    if (openEntry) return false;
+
+    saveEntryStore();
+
+    settings.activePeriodId = id;
+    saveSettings();
+
+    entryStore = EntryStore(loadEntryStore());
+    return true;
+}
+
+bool App::deletePeriod(const int id) {
+    if (periodStore.getById(id) == nullptr) return false;
+    if (periodStore.getAllPeriods().size() <= 1) return false;
+    if (openEntry && id == settings.activePeriodId) return false;
+
+    if (id == settings.activePeriodId) {
+        const auto& periods = periodStore.getAllPeriods();
+        for (auto it = periods.rbegin(); it != periods.rend(); ++it)
+            if (it->id != id) { swapActivePeriod(it->id); break; }
+    }
+
+    periodStore.deletePeriod(id);
+    savePeriodStore();
+
+    std::error_code ec;
+    std::filesystem::remove(entriesPathFor(id), ec);
+    return true;
+}
+
+[[nodiscard]] std::string App::entriesPathFor(const int id) const {
+    return "entries" + std::to_string(id) + ".json";
+}
+
+[[nodiscard]] const std::vector<Period>& App::getPeriods() const {
+    return periodStore.getAllPeriods();
+}
+
+[[nodiscard]] int App::getActivePeriodId() const {
+    return settings.activePeriodId;
+}
+
+const Period& App::getActivePeriod() const {
+    return *periodStore.getById(settings.activePeriodId);
+}
+
+[[nodiscard]] const Period* App::getPeriodById(const int id) const {
+    return periodStore.getById(id);
 }

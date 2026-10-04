@@ -2,6 +2,8 @@
 #define STUDYTRACKER_APP_H
 
 #include "EntryStore.h"
+#include "PeriodStore.h"
+#include "Settings.h"
 #include <optional>
 #include "EditEntry.h"
 
@@ -9,9 +11,14 @@ class App {
 public:
     App();
 
-    [[nodiscard]] std::vector<Entry> loadStore() const;
+    [[nodiscard]] std::vector<Entry> loadEntryStore() const;
+    void saveEntryStore() const;
 
-    void saveStore() const;
+    [[nodiscard]] std::vector<Period> loadPeriodStore() const;
+    void savePeriodStore() const;
+
+    [[nodiscard]] Settings loadSettings() const;
+    void saveSettings() const;
 
     [[nodiscard]] const std::vector<Entry>& getEntries() const;
 
@@ -19,12 +26,28 @@ public:
     bool endEntry(const std::string &note, const std::string &subject);
     [[nodiscard]] bool isTimerRunning() const;
 
-    void deleteEntry(const int id);
+    void deleteEntry(int id);
     void editEntry(const EditEntry& editEntry);
 
+    [[nodiscard]] const std::vector<Period>& getPeriods() const;
+    [[nodiscard]] int getActivePeriodId() const;
+    [[nodiscard]] const Period& getActivePeriod() const;
+    [[nodiscard]] const Period* getPeriodById(int) const;
+    void addPeriod(const std::string &name);
+    void addSubject(int, const std::string &subject);
+    void deleteSubject(int, const std::string&);
+    void editSubject(int, const std::string&, const std::string&);
+    bool swapActivePeriod(int id);
+    bool deletePeriod(int id);
+
 private:
-    std::optional<Entry> openEntry;
+    PeriodStore periodStore;
+    Settings settings;
     EntryStore entryStore;
+
+    std::optional<Entry> openEntry;
+
+    [[nodiscard]] std::string entriesPathFor(int id) const;
 };
 
 

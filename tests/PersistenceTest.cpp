@@ -30,10 +30,10 @@ TEST(PersistenceTest, RoundTripPreservesEntries) {
     };
 
     std::ostringstream out;
-    persistence::save(original, out);
+    persistence::saveEntries(original, out);
 
     std::istringstream in(out.str());
-    std::vector<Entry> loaded = persistence::load(in);
+    std::vector<Entry> loaded = persistence::loadEntries(in);
 
     EXPECT_EQ(loaded, original);
 }
@@ -42,15 +42,15 @@ TEST(PersistenceTest, RoundTripEmptyVector) {
     std::vector<Entry> original;
 
     std::ostringstream out;
-    persistence::save(original, out);
+    persistence::saveEntries(original, out);
 
     std::istringstream in(out.str());
-    EXPECT_TRUE(persistence::load(in).empty());
+    EXPECT_TRUE(persistence::loadEntries(in).empty());
 }
 
 TEST(PersistenceTest, SaveWritesJsonArray) {
     std::ostringstream out;
-    persistence::save({ makeEntry(0, "Math", 30, 1700000000, "warmup") }, out);
+    persistence::saveEntries({ makeEntry(0, "Math", 30, 1700000000, "warmup") }, out);
 
     const std::string text = out.str();
     ASSERT_FALSE(text.empty());
@@ -61,5 +61,5 @@ TEST(PersistenceTest, LoadFromFailedStreamReturnsEmpty) {
     std::istringstream in;
     in.setstate(std::ios::failbit);
 
-    EXPECT_TRUE(persistence::load(in).empty());
+    EXPECT_TRUE(persistence::loadEntries(in).empty());
 }

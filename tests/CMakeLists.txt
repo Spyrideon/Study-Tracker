@@ -11,10 +11,13 @@ enable_testing()
 
 add_executable(EntryStoreTest EntryStoreTest.cpp)
 add_executable(PersistenceTest PersistenceTest.cpp)
+add_executable(PeriodStoreTest PeriodStoreTest.cpp)
 
 target_link_libraries(EntryStoreTest PRIVATE StudyTrackerLib GTest::gtest_main)
 target_link_libraries(PersistenceTest PRIVATE StudyTrackerLib GTest::gtest_main)
+target_link_libraries(PeriodStoreTest PRIVATE StudyTrackerLib GTest::gtest_main)
 
 include(GoogleTest)
 gtest_discover_tests(PersistenceTest)
 gtest_discover_tests(EntryStoreTest)
+gtest_discover_tests(PeriodStoreTest)
