@@ -229,6 +229,7 @@ void Ui::drawPeriodCombo() {
 
     if (ImGui::BeginCombo("##periodSelect", periodPreview, ImGuiComboFlags_WidthFitPreview)) {
         for (const Period& p : periods) {
+            ImGui::PushID(p.id);
             const bool selected = (p.id == optionsSelPeriodId);
             if (ImGui::Selectable(p.name.c_str(), selected)) {
                 optionsSelPeriodId = p.id;
@@ -237,6 +238,7 @@ void Ui::drawPeriodCombo() {
             }
             if (selected)
                 ImGui::SetItemDefaultFocus();
+            ImGui::PopID();
         }
         ImGui::EndCombo();
     }
@@ -272,6 +274,22 @@ void Ui::drawPeriodCombo() {
         }
     }
 
+    if (current) {
+        const bool isActive = current->id == app.getActivePeriodId();
+        const bool lastOne  = periods.size() <= 1;
+        const bool locked   = isActive && app.isTimerRunning();
+
+        ImGui::SameLine();
+        ImGui::BeginDisabled(lastOne || locked);
+        if (ImGui::Button("Delete period")) {
+            deletePeriodId = current->id;
+            ImGui::OpenPopup("Delete period?");
+        }
+        ImGui::EndDisabled();
+        if ((lastOne || locked) && ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
+            ImGui::SetTooltip(lastOne ? "Can't delete the only period." : "Stop the timer first.");
+    }
+    drawDeletePeriodPopup();
 
 }
 
@@ -309,6 +327,29 @@ void Ui::drawSubjectCombo(const char* id,
                 ImGui::SetItemDefaultFocus();
         }
         ImGui::EndCombo();
+    }
+}
+
+void Ui::drawDeletePeriodPopup() {
+    if (ImGui::BeginPopupModal("Delete period?", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+        const Period* p = app.getPeriodById(deletePeriodId);
+        ImGui::Text("Delete \"%s\" and all its entries?", p ? p->name.c_str() : "?");
+        ImGui::TextDisabled("This cannot be undone.");
+        ImGui::Spacing();
+
+        if (ImGui::Button("Delete")) {
+            app.deletePeriod(deletePeriodId);
+            optionsSelPeriodId   = app.getActivePeriodId();
+            optionsSelSubjectIdx = 0;
+            deletePeriodId = -1;
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel")) {
+            deletePeriodId = -1;
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
     }
 }
 

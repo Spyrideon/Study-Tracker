@@ -38,6 +38,7 @@ public:
     void deleteSubject(int, const std::string&);
     void editSubject(int, const std::string&, const std::string&);
     bool swapActivePeriod(int id);
+    bool deletePeriod(int id);
 
 private:
     PeriodStore periodStore;

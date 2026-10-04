@@ -2,6 +2,7 @@
 
 #include "persistence.h"
 #include <fstream>
+#include <filesystem>
 
 App::App() : periodStore(loadPeriodStore()), settings(loadSettings()) {
 
@@ -119,6 +120,25 @@ bool App::swapActivePeriod(const int id) {
     saveSettings();
 
     entryStore = EntryStore(loadEntryStore());
+    return true;
+}
+
+bool App::deletePeriod(const int id) {
+    if (periodStore.getById(id) == nullptr) return false;
+    if (periodStore.getAllPeriods().size() <= 1) return false;
+    if (openEntry && id == settings.activePeriodId) return false;
+
+    if (id == settings.activePeriodId) {
+        const auto& periods = periodStore.getAllPeriods();
+        for (auto it = periods.rbegin(); it != periods.rend(); ++it)
+            if (it->id != id) { swapActivePeriod(it->id); break; }
+    }
+
+    periodStore.deletePeriod(id);
+    savePeriodStore();
+
+    std::error_code ec;
+    std::filesystem::remove(entriesPathFor(id), ec);
     return true;
 }
 

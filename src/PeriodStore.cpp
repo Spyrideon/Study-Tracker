@@ -12,6 +12,8 @@ PeriodStore::PeriodStore(const std::vector<Period> &str) : store(str){
 }
 
 int PeriodStore::addPeriod(Period period) {
+    for (const auto& p : store)
+        if (p.name == period.name) return -1;
     period.id = nextId++;
     const int id = period.id;
     store.push_back(std::move(period));

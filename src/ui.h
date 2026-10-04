@@ -34,6 +34,8 @@ private:
     std::string periodNameBuff;
     std::string periodSubjectBuff;
 
+    int deletePeriodId = -1;
+
     void drawEntryTable(const std::vector<Entry>& entries);
     void drawTracker();
     void drawEditPopup();
@@ -41,6 +43,7 @@ private:
     void drawOptionsPopup();
     void drawPeriodCombo();
     void drawSubjectCombo(const char* id, const std::vector<std::string>& subjects, std::string& selection);
+    void drawDeletePeriodPopup();
 
     [[nodiscard]] std::string formatDuration(std::chrono::minutes d) const;
 };
