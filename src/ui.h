@@ -36,6 +36,8 @@ private:
 
     int deletePeriodId = -1;
 
+    std::vector<const Entry*> sortedView;
+
     void drawEntryTable(const std::vector<Entry>& entries);
     void drawTracker();
     void drawEditPopup();

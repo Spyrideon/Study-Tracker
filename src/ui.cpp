@@ -4,6 +4,52 @@
 #include "ImGuiDatePicker.hpp"
 #include <algorithm>
 
+namespace {
+    enum EntryColumn : ImGuiID {
+        ColSubject,
+        ColDuration,
+        ColDate,
+        ColNote,
+        ColAction
+    };
+
+    template <typename T>
+    int compare3(const T& a, const T& b) {
+        if (a < b) return -1;
+        if (b < a) return 1;
+        return 0;
+    }
+
+    int compareIgnoreCase(const std::string& a, const std::string& b) {
+        const size_t n = std::min(a.size(), b.size());
+        for (size_t i = 0; i < n; ++i) {
+            const int ca = std::tolower(static_cast<unsigned char>(a[i]));
+            const int cb = std::tolower(static_cast<unsigned char>(b[i]));
+            if (ca != cb) return ca < cb ? -1 : 1;
+        }
+        return compare3(a.size(), b.size());
+    }
+
+    void sortEntries(std::vector<const Entry*>& view, const ImGuiTableSortSpecs* specs) {
+        std::ranges::sort(view, [specs](const Entry* a, const Entry* b) {
+            for (int n = 0; n < specs->SpecsCount; ++n) {
+                const ImGuiTableColumnSortSpecs& s = specs->Specs[n];
+                int delta = 0;
+                switch (s.ColumnUserID) {
+                    case ColSubject:  delta = compareIgnoreCase(a->subject, b->subject); break;
+                    case ColDuration: delta = compare3(a->duration, b->duration);       break;
+                    case ColDate:     delta = compare3(a->start, b->start);             break;
+                    default: break;
+                }
+                if (delta != 0)
+                    return s.SortDirection == ImGuiSortDirection_Ascending ? delta < 0 : delta > 0;
+            }
+            return a->id < b->id;
+        });
+    }
+}
+
+
 Ui::Ui(App &app) : app(app){}
 
 void Ui::render() {
@@ -15,29 +61,42 @@ void Ui::render() {
 void Ui::drawEntryTable(const std::vector<Entry> &entries){
     ImGui::Begin("Table", nullptr);
 
-    static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY | ImGuiTableFlags_Resizable | ImGuiTableFlags_Hideable | ImGuiTableFlags_Reorderable;
+    static ImGuiTableFlags flags =  ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY | ImGuiTableFlags_Resizable | ImGuiTableFlags_Hideable |
+                                    ImGuiTableFlags_Reorderable | ImGuiTableFlags_Sortable | ImGuiTableFlags_SortMulti;
 
     const int columnCount = 5;
     int toDelete = -1;
     if (ImGui::BeginTable("table1", columnCount, flags)) {
         ImGui::TableSetupScrollFreeze(0,1);
-        ImGui::TableSetupColumn("Subject");
-        ImGui::TableSetupColumn("Duration");
-        ImGui::TableSetupColumn("Date-Started");
-        ImGui::TableSetupColumn("Note");
-        ImGui::TableSetupColumn("Action");
+        ImGui::TableSetupColumn("Subject", ImGuiTableColumnFlags_None, 0.0f, ColSubject);
+        ImGui::TableSetupColumn("Duration", ImGuiTableColumnFlags_PreferSortDescending, 0.0f, ColDuration);
+        ImGui::TableSetupColumn("Date-Started", ImGuiTableColumnFlags_DefaultSort | ImGuiTableColumnFlags_PreferSortDescending, 0.0f, ColDate);
+        ImGui::TableSetupColumn("Note", ImGuiTableColumnFlags_NoSort, 0.0f, ColNote);
+        ImGui::TableSetupColumn("Action", ImGuiTableColumnFlags_NoSort, 0.0f, ColAction);
         ImGui::TableHeadersRow();
 
-        for (int row = 0; row < entries.size(); row++) {
-            const Entry& e = entries[row];
-            ImGui::PushID(row);
+        sortedView.clear();
+        sortedView.reserve(entries.size());
+        for (const Entry& e : entries)
+            sortedView.push_back(&e);
+
+        if (ImGuiTableSortSpecs* specs = ImGui::TableGetSortSpecs()) {
+            if (specs->SpecsCount > 0)
+                sortEntries(sortedView, specs);
+            specs->SpecsDirty = false;
+        }
+
+
+        for (const Entry* ep : sortedView) {
+            const Entry& e = *ep;
+            ImGui::PushID(e.id);
             ImGui::TableNextRow();
 
             ImGui::TableNextColumn();
             ImGui::TextUnformatted(e.subject.c_str());
 
             ImGui::TableNextColumn();
-            ImGui::Text(formatDuration(e.duration).c_str());
+            ImGui::TextUnformatted(formatDuration(e.duration).c_str());
 
             ImGui::TableNextColumn();
             const auto local = std::chrono::current_zone()->to_local(e.start);
@@ -62,7 +121,6 @@ void Ui::drawEntryTable(const std::vector<Entry> &entries){
 
             ImGui::PopID();
         }
-
 
         ImGui::EndTable();
     }
