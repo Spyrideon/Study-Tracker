@@ -25,12 +25,16 @@ add_library(imgui STATIC
         ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
         ${IMGUI_DIR}/misc/cpp/imgui_stdlib.cpp
         ${IMGUI_DIR}/datepicker/ImGuiDatePicker.cpp
+        ${IMGUI_DIR}/implot/implot.cpp
+        ${IMGUI_DIR}/implot/implot_demo.cpp
+        ${IMGUI_DIR}/implot/implot_items.cpp
 )
 target_include_directories(imgui PUBLIC
         ${IMGUI_DIR}
         ${IMGUI_DIR}/backends
         ${IMGUI_DIR}/misc/cpp
-        ${IMGUI_DIR}/datepicker)
+        ${IMGUI_DIR}/datepicker
+        ${IMGUI_DIR}/implot)
 target_link_libraries(imgui PUBLIC SDL2::SDL2 OpenGL::GL)
 
 

@@ -4,6 +4,7 @@
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_internal.h"
+#include "implot.h"
 #include "ui.h"
 #include "App.h"
 
@@ -49,6 +50,7 @@ int main(int, char**)          // (int,char**) sdl entry-point
     // --- Dear IMGUI setup ----------------------------------------------
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
+    ImPlot::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
@@ -102,6 +104,7 @@ int main(int, char**)          // (int,char**) sdl entry-point
         ImGui::DockSpaceOverViewport(dockspace_id, viewport);
 
         ImGui::ShowDemoWindow();
+        ImPlot::ShowDemoWindow();
 
         ui.render();
 
@@ -119,6 +122,7 @@ int main(int, char**)          // (int,char**) sdl entry-point
     // cleanup
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplSDL2_Shutdown();
+    ImPlot::DestroyContext();
     ImGui::DestroyContext();
 
     SDL_GL_DeleteContext(gl_context);

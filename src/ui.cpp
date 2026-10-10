@@ -2,6 +2,7 @@
 #include "App.h"
 #include "EditEntry.h"
 #include "ImGuiDatePicker.hpp"
+#include "implot.h"
 #include <algorithm>
 
 namespace {
