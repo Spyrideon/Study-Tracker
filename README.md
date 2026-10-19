@@ -3,6 +3,10 @@
 This is a personal project, which originated during my exam period.\
 I wanted to track the times I spent studying on different subjects but could not find software that was both free to use and seemingly fit for my purpose and preferences.
 
+ 
+<img width="1281" height="689" alt="StudyTracker-Screenshot" src="https://github.com/user-attachments/assets/2edb6831-c08e-478d-9f70-8a1468e01eea"/>
+Screenshot of the running tracker
+
 # Goal
 The goal for this piece of software is a simple working study tracker, \
 with the tools to document and analyze the time that was spent on studying.
