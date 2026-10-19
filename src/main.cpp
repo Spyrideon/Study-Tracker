@@ -89,15 +89,14 @@ int main(int, char**)          // (int,char**) sdl entry-point
 
             ImGuiID dock_main  = dockspace_id;
             ImGuiID dock_right = 0;
+            ImGuiID dock_bottom = 0;
 
-            ImGui::DockBuilderSplitNode(dock_main,
-                                ImGuiDir_Right,
-                                0.25f,
-                                &dock_right,
-                                &dock_main);
+            ImGui::DockBuilderSplitNode(dock_main, ImGuiDir_Right, 0.25f, &dock_right,  &dock_main);
+            ImGui::DockBuilderSplitNode(dock_main, ImGuiDir_Down,  0.40f, &dock_bottom, &dock_main);
 
-            ImGui::DockBuilderDockWindow("Table",   dock_main);
-            ImGui::DockBuilderDockWindow("Tracker", dock_right);
+            ImGui::DockBuilderDockWindow("Table",      dock_main);
+            ImGui::DockBuilderDockWindow("Tracker",    dock_right);
+            ImGui::DockBuilderDockWindow("Statistics", dock_bottom);
             ImGui::DockBuilderFinish(dockspace_id);
         }
 

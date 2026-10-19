@@ -40,6 +40,7 @@ private:
 
     void drawEntryTable(const std::vector<Entry>& entries);
     void drawTracker();
+    void drawStatistics();
     void drawEditPopup();
     void drawMenu();
     void drawOptionsPopup();

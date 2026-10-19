@@ -57,6 +57,7 @@ void Ui::render() {
     drawMenu();
     drawEntryTable(app.getEntries());
     drawTracker();
+    drawStatistics();
 }
 
 void Ui::drawEntryTable(const std::vector<Entry> &entries){
@@ -163,6 +164,70 @@ void Ui::drawTracker() {
 
         drawSubjectCombo("##trackerSubject", subjects, subjectBuff);
         ImGui::InputText("Note", &noteBuff);
+    }
+
+    ImGui::End();
+}
+
+void Ui::drawStatistics() {
+    ImGui::Begin("Statistics");
+
+    std::map<std::string, std::chrono::minutes> totals;
+    std::chrono::minutes sum{0};
+    for (const Entry& e : app.getEntries()) {
+        totals[e.subject] += e.duration;
+        sum += e.duration;
+    }
+
+    if (sum.count() == 0) {
+        ImGui::TextDisabled("No study time recorded in this period yet.");
+        ImGui::End();
+        return;
+    }
+
+    std::vector<std::pair<std::string, std::chrono::minutes>> sorted(totals.begin(), totals.end());
+    std::ranges::stable_sort(sorted, std::ranges::greater{},
+                             [](const auto& p) { return p.second; });
+
+    const int n = static_cast<int>(sorted.size());
+    std::vector<const char*> names;
+    std::vector<double> positions, percents;
+    std::vector<std::string> barLabels;
+    names.reserve(n); positions.reserve(n); percents.reserve(n); barLabels.reserve(n);
+
+    double maxPct = 0.0;
+    for (int i = 0; i < n; ++i) {
+        const auto& [subject, time] = sorted[i];
+        const double pct = 100.0 * static_cast<double>(time.count()) / static_cast<double>(sum.count());
+        names.push_back(subject.c_str());
+        positions.push_back(i);
+        percents.push_back(pct);
+        barLabels.push_back(std::format("{} ({:.0f}%)", formatDuration(time), pct));
+        maxPct = std::max(maxPct, pct);
+    }
+
+    ImGui::Text("Total: %s", formatDuration(sum).c_str());
+
+    constexpr ImPlotFlags plotFlags = ImPlotFlags_NoLegend | ImPlotFlags_NoMenus
+                                    | ImPlotFlags_NoBoxSelect | ImPlotFlags_NoMouseText;
+
+    if (ImPlot::BeginPlot("##timePerSubject", ImVec2(-1, -1), plotFlags)) {
+        ImPlot::SetupAxes(nullptr, nullptr,
+                          ImPlotAxisFlags_Lock,
+                          ImPlotAxisFlags_Lock | ImPlotAxisFlags_Invert | ImPlotAxisFlags_NoGridLines);
+        ImPlot::SetupAxisFormat(ImAxis_X1, "%.0f%%");
+        ImPlot::SetupAxisLimits(ImAxis_X1, 0.0, maxPct * 1.35, ImPlotCond_Always);
+        ImPlot::SetupAxisLimits(ImAxis_Y1, -0.5, n - 0.5, ImPlotCond_Always);
+        ImPlot::SetupAxisTicks(ImAxis_Y1, positions.data(), n, names.data());
+
+        ImPlot::PlotBars("##time", percents.data(), n, 0.6, 0.0, ImPlotSpec(ImPlotProp_Flags, ImPlotBarsFlags_Horizontal));
+
+        for (int i = 0; i < n; ++i) {
+            const char* txt = barLabels[i].c_str();
+            const float off = ImGui::CalcTextSize(txt).x * 0.5f + 6.0f;
+            ImPlot::PlotText(txt, percents[i], positions[i], ImVec2(off, 0));
+        }
+        ImPlot::EndPlot();
     }
 
     ImGui::End();
